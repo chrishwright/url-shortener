@@ -1,0 +1,25 @@
+version: '3.7'
+
+services:
+  backend:
+    container_name: backend-app
+    image: backendapp
+    build:
+      context: .
+      dockerfile: backend.dockerfile
+    ports:
+      -"8080:8080"
+    networks:
+      - "url-shortener-network"
+    depends_on:
+      - cassandra-counters
+
+  cassandra-counter:
+    container_name: cassandra-counter
+    image: cassandra:4.1.1
+    networks:
+      - url-shortener-network
+
+networks:
+  url-shortener-network:
+    driver: bridge
