@@ -8,11 +8,29 @@ services:
       context: .
       dockerfile: backend.dockerfile
     ports:
-      -"8080:8080"
+      - "8080:8080"
     networks:
       - "url-shortener-network"
     depends_on:
-      - cassandra-counters
+      - cassandra-counter
+
+  cassandra-load-keyspace:
+    container_name: cassandra-load-keyspace
+    image: cassandra-load-keyspace
+    depends_on:
+      - cassandra-counter
+    build:
+      context: .
+      dockerfile: cassandra-seed.dockerfile
+    command: /bin/bash -c "sleep 60 && echo loading cassandra keyspace && cqlsh cassandra-counter -f /cassandra-counter-seed.cql"
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+    networks:
+      - url-shortener-network
 
   cassandra-counter:
     container_name: cassandra-counter
