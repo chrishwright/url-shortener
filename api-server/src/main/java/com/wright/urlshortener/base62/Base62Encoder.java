@@ -8,7 +8,7 @@ public class Base62Encoder {
         StringBuilder sb = new StringBuilder();
         while (number > 0) {
             final long remainder = number % 62;
-            sb.append(CHARS.charAt((int) remainder));
+            sb.insert(0, CHARS.charAt((int) remainder));
             number /= 62;
         }
 
