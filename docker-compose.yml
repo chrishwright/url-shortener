@@ -1,52 +1,61 @@
 version: '3.7'
 
 services:
-  # backend:
-  #   image: backendapp
-  #   build:
-  #     context: .
-  #     dockerfile: backend.dockerfile
-  #   ports:
-  #     - "8080"
-  #   networks:
-  #     - url-shortener-network
-  #   depends_on:
-  #     - cassandra-counter
+  backend:
+    image: backendapp
+    build:
+      context: .
+      dockerfile: backend.dockerfile
+    ports:
+      - 8080:8080
+    networks:
+      - url-shortener-network
+    depends_on:
+      cassandra-counter:
+        condition: service_healthy
+      cassandra-counter-2:
+        condition: service_healthy
 
   cassandra-counter:
     container_name: cassandra-counter
     environment:
       CASSANDRA_BROADCAST_ADDRESS: "cassandra-counter"
-    ports:
-      - 127.0.0.1:9042:9042
+    expose:
+      - 9042
     deploy:
       restart_policy:
         condition: on-failure
         max_attempts: 3
         window: 120s
-      placement:
-        constraints:
-          - node.hostname == node-001
     image: cassandra:4.1.1
     networks:
       - url-shortener-network
+    healthcheck:
+      test: ["CMD-SHELL", "[ $$(nodetool statusgossip) = running ]"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   cassandra-counter-2:
     container_name: cassandra-counter-2
     environment:
       CASSANDRA_BROADCAST_ADDRESS: "cassandra-counter-2"
       CASSANDRA_SEEDS: "cassandra-counter"
+    expose:
+      - 9042
     deploy:
       restart_policy:
         condition: on-failure
         max_attempts: 3
         window: 120s
-      placement:
-        constraints:
-          - node.hostname == node-002
     image: cassandra:4.1.1
     networks:
       - url-shortener-network
+    healthcheck:
+      test: ["CMD-SHELL", "[ $$(nodetool statusgossip) = running ]"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
 networks:
   url-shortener-network:

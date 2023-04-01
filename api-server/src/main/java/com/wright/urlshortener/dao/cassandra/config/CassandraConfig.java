@@ -43,7 +43,7 @@ public class CassandraConfig {
         @Nonnull
         @Override
         public String getContactPoints() {
-            return "localhost";
+            return "cassandra-counter";
         }
 
         @Nonnull
