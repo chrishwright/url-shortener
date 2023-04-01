@@ -1,38 +1,49 @@
 version: '3.7'
 
 services:
-  backend:
-    image: backendapp
-    build:
-      context: .
-      dockerfile: backend.dockerfile
-    ports:
-      - "8080"
-    networks:
-      - url-shortener-network
-    depends_on:
-      - cassandra-counter
-
-  cassandra-load-keyspace:
-    container_name: cassandra-load-keyspace
-    image: cassandra-load-keyspace
-    depends_on:
-      - cassandra-counter
-    build:
-      context: .
-      dockerfile: cassandra-seed.dockerfile
-    command: /bin/bash -c "sleep 60 && echo loading cassandra keyspace && cqlsh cassandra-counter -f /cassandra-counter-seed.cql"
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 120s
-    networks:
-      - url-shortener-network
+  # backend:
+  #   image: backendapp
+  #   build:
+  #     context: .
+  #     dockerfile: backend.dockerfile
+  #   ports:
+  #     - "8080"
+  #   networks:
+  #     - url-shortener-network
+  #   depends_on:
+  #     - cassandra-counter
 
   cassandra-counter:
     container_name: cassandra-counter
+    environment:
+      CASSANDRA_BROADCAST_ADDRESS: "cassandra-counter"
+    ports:
+      - 127.0.0.1:9042:9042
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+        window: 120s
+      placement:
+        constraints:
+          - node.hostname == node-001
+    image: cassandra:4.1.1
+    networks:
+      - url-shortener-network
+
+  cassandra-counter-2:
+    container_name: cassandra-counter-2
+    environment:
+      CASSANDRA_BROADCAST_ADDRESS: "cassandra-counter-2"
+      CASSANDRA_SEEDS: "cassandra-counter"
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+        window: 120s
+      placement:
+        constraints:
+          - node.hostname == node-002
     image: cassandra:4.1.1
     networks:
       - url-shortener-network

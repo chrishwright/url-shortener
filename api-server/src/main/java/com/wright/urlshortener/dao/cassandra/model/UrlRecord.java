@@ -1,7 +1,6 @@
 package com.wright.urlshortener.dao.cassandra.model;
 
-import org.springframework.data.cassandra.core.mapping.PrimaryKey;
-import org.springframework.data.cassandra.core.mapping.Table;
+import org.springframework.data.cassandra.core.mapping.*;
 
 import java.util.Objects;
 
@@ -10,7 +9,9 @@ public class UrlRecord {
 
     @PrimaryKey
     private final long id;
+    @Indexed
     private final String shortUrl;
+    @Indexed
     private final String longUrl;
 
     public UrlRecord(long id, String shortUrl, String longUrl) {
