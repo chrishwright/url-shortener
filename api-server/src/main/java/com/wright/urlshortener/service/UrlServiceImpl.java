@@ -27,7 +27,6 @@ public class UrlServiceImpl implements UrlService {
 
         urlRepository.save(new UrlRecord(counter++, shortUrl, longUrl));
 
-        // TODO: should urlRecord be returned here?
         return shortUrl;
     }
 
@@ -35,10 +34,10 @@ public class UrlServiceImpl implements UrlService {
     public String getLongUrl(String shortUrl) {
         UrlRecord urlRecord = urlRepository.findByShortUrl(shortUrl);
 
-        // TODO: should urlRecord be returned here?
         if (urlRecord != null && urlRecord.getLongUrl() != null) {
             return urlRecord.getLongUrl();
         }
+
         return null;
     }
 }
