@@ -3,17 +3,23 @@ package com.wright.urlshortener.service;
 import com.wright.urlshortener.base62.Base62Encoder;
 import com.wright.urlshortener.dao.cassandra.model.UrlRecord;
 import com.wright.urlshortener.dao.cassandra.repository.UrlRepository;
+import com.wright.urlshortener.idgenerator.UniqueIdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UrlServiceImpl implements UrlService {
 
-    // TODO: create range from ticket server
-    private long counter = 0;
+    private final UniqueIdGenerator uniqueIdGenerator;
 
     @Autowired
     private UrlRepository urlRepository;
+
+    public UrlServiceImpl() {
+        // TODO: change to a system env var
+        // TODO: should this not be set in the CTOR?  Should the ID generator class be static?
+        this.uniqueIdGenerator = new UniqueIdGenerator(0);
+    }
 
     @Override
     public String createShortUrl(String longUrl) {
@@ -23,9 +29,10 @@ public class UrlServiceImpl implements UrlService {
             return urlRecord.getShortUrl();
         }
 
-        String shortUrl = Base62Encoder.encode(counter);
+        long nextId = this.uniqueIdGenerator.nextId();
+        String shortUrl = Base62Encoder.encode(nextId);
 
-        urlRepository.save(new UrlRecord(counter++, shortUrl, longUrl));
+        urlRepository.save(new UrlRecord(nextId, shortUrl, longUrl));
 
         return shortUrl;
     }

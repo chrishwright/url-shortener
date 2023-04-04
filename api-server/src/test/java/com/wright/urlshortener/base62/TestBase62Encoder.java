@@ -1,5 +1,6 @@
 package com.wright.urlshortener.base62;
 
+import com.wright.urlshortener.idgenerator.UniqueIdGenerator;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
