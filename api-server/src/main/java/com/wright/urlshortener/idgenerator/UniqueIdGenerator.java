@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class UniqueIdGenerator {
 
     private static final long EPOCH_TIME = 1680484979000L;
-    private static final int WORKER_BITS = 5;
+    private static final int WORKER_BITS = 4;
     private static final int SEQUENCE_BITS = 9;
     private static final long SEQUENCE_MAX = (long) Math.pow(2, SEQUENCE_BITS) - 1;
     private final long workerId;

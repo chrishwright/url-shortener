@@ -31,7 +31,6 @@ public class UrlServiceImpl implements UrlService {
 
         long nextId = this.uniqueIdGenerator.nextId();
         String shortUrl = Base62Encoder.encode(nextId);
-
         urlRepository.save(new UrlRecord(nextId, shortUrl, longUrl));
 
         return shortUrl;
