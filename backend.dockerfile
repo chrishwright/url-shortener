@@ -8,9 +8,9 @@ WORKDIR /app
 
 COPY    ./api-server/pom.xml ./pom.xml
 
-COPY    ./api-server/src ./src
+COPY    ./api-server/src/main ./src/main
 
-RUN     mvn clean install
+RUN     mvn clean package
 
 FROM    amazoncorretto:19-alpine-jdk
 

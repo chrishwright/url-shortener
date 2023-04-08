@@ -15,8 +15,6 @@ services:
         condition: service_healthy
       cassandra-counter-2:
         condition: service_healthy
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
 
   cassandra-counter:
     container_name: cassandra-counter
@@ -33,7 +31,6 @@ services:
     networks:
       - url-shortener-network
     healthcheck:
-      # test: ["CMD-SHELL", "[ $$(nodetool statusgossip) = running ]"]
       test: nodetool status
       interval: 30s
       timeout: 10s
@@ -55,7 +52,6 @@ services:
     networks:
       - url-shortener-network
     healthcheck:
-      # test: ["CMD-SHELL", "[ $$(nodetool statusgossip) = running ]"]
       test: nodetool status
       interval: 30s
       timeout: 10s
