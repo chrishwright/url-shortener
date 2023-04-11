@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 public class UrlRepositoryTestIT {
+
     @Autowired
     private UrlRepository urlRepository;
 

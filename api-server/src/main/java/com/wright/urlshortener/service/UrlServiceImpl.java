@@ -3,6 +3,7 @@ package com.wright.urlshortener.service;
 import com.wright.urlshortener.base62.Base62Encoder;
 import com.wright.urlshortener.dao.cassandra.model.UrlRecord;
 import com.wright.urlshortener.dao.cassandra.repository.UrlRepository;
+import com.wright.urlshortener.idgenerator.TimeIncreasingUniqueIdGenerator;
 import com.wright.urlshortener.idgenerator.UniqueIdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,15 +11,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class UrlServiceImpl implements UrlService {
 
+    public static final short DESIRED_URL_LENGTH = 9;
+
     private final UniqueIdGenerator uniqueIdGenerator;
 
     @Autowired
     private UrlRepository urlRepository;
 
     public UrlServiceImpl() {
-        // TODO: change to a system env var
-        // TODO: should this not be set in the CTOR?  Should the ID generator class be static?
-        this.uniqueIdGenerator = new UniqueIdGenerator(0);
+        final int workerId = Integer.parseInt(System.getenv("WORKER_ID"));
+        this.uniqueIdGenerator = new TimeIncreasingUniqueIdGenerator(workerId);
     }
 
     @Override

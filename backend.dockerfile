@@ -4,6 +4,8 @@ LABEL   author="Chris Wright"
 
 ENV     PORT=8080
 
+ENV     WORKER_ID=0
+
 WORKDIR /app
 
 COPY    ./api-server/pom.xml ./pom.xml

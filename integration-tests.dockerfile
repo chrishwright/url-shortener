@@ -12,12 +12,4 @@ COPY    ./api-server/src/ ./src/
 
 RUN     mvn clean package
 
-# FROM    amazoncorretto:19-alpine-jdk
-
-# EXPOSE  $PORT
-
-# WORKDIR /app
-
-# COPY --from=0 ./app/target ./target
-
-ENTRYPOINT ["mvn", "install"]
+ENTRYPOINT ["mvn", "verify"]
